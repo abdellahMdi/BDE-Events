@@ -1,58 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎟️ BDE-Events — La Billetterie du Campus ENAA
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**BDE-Events** est la plateforme centralisée de gestion d'événements et de billetterie du campus ENAA. Elle offre au Bureau des Étudiants (BDE) un outil d'administration complet pour publier et piloter les événements, tout en permettant aux étudiants de réserver leur place en un clic, de simuler un paiement sécurisé et d'obtenir un billet numérique unique (Pass) directement sur leur profil.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌟 Table des Matières
+- [Fonctionnalités Principales](#-fonctionnalités-principales)
+- [Technologies Utilisées](#-technologies-utilisées)
+- [Prérequis](#-prérequis)
+- [Installation & Configuration](#-installation--configuration)
+- [Base de Données & Seeding](#-base-de-données--seeding)
+- [Épics & User Stories](#-épics--user-stories)
+- [Auteur](#-auteur)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Fonctionnalités Principales
 
-## Learning Laravel
+### 👨‍💼 Espace BDE (Administration)
+* **Création & Gestion d'Événements :** Publication complète d'événements (Titre, Description, Lieu, Date, Heure, Prix, Jauge maximale).
+* **Mise à jour & Suppression :** Édition en temps réel des détails d'un événement via des routes sécurisées (`PUT`/`DELETE`).
+* **Suivi des Capacités :** Tableau de bord affichant le nombre de places restantes en temps réel pour adapter la logistique.
+* **Contrôle d'Accès Sécurisé :** Middleware d'administration filtrant strictement l'accès aux membres du BDE.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🎓 Espace Étudiant
+* **Consultation du Catalogue :** Découverte des événements disponibles sur le campus.
+* **Inscriptions en Un Clic :** Validation immédiate des réservations pour les événements gratuits sans passer par un tunnel de paiement.
+* **Pass Numérique / Billet Unique :** Génération automatique d'un ticket avec une référence unique (`BDE-2026-XXXXX`).
+* **Gestion des Réservations :** Espace *"Mes Billets"* permettant de consulter tous les billets actifs et leurs détails.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🛠️ Technologies Utilisées
 
-## Agentic Development
+* **Backend :** [Laravel 13](https://laravel.com/) (PHP 8.5)
+* **Frontend :** Blade Templates, Tailwind CSS
+* **Base de Données :** MySQL / MariaDB
+* **Authentification & Autorisation :** Middleware Laravel Custom (`AdminMiddleware`, `auth`)
+* **Gestion de Dates :** Carbon (Intégration Laravel)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
+## ⚙️ Prérequis
+
+Avant de commencer, assurez-vous de disposer des éléments suivants :
+* **PHP** `>= 8.2` (PHP 8.5 recommandé)
+* **Composer**
+* **MySQL** ou **MariaDB**
+* **Node.js & NPM** (pour le build des assets)
+
+---
+
+## 📥 Installation & Configuration
+
+### 1. Cloner le projet
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/votre-compte/bde-events.git
+cd bde-events
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Installer les dépendances PHP
+```bash
+composer install
+```
 
-## Contributing
+### 3. Configurer l'environnement
+Copiez le fichier `.env.example` pour créer votre fichier `.env` :
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Ouvrez `.env` et configurez votre base de données :
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bde_events
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+### 4. Générer la clé d'application
+```bash
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🗄️ Base de Données & Seeding
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Exécutez les migrations pour créer la structure de la base de données, accompagnées des seeders pour générer les rôles et administrateurs par défaut :
 
-## License
+```bash
+php artisan migrate:fresh --seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> **Note :** Le seeder initialise par défaut un compte Administrateur (BDE) et un compte Étudiant pour vos tests.
+
+### Réinitialiser le Cache des Routes & Configuration
+```bash
+php artisan route:clear
+php artisan config:clear
+php artisan view:clear
+```
+
+### 5. Lancer le serveur local
+```bash
+php artisan serve
+```
+La plateforme est accessible à l'adresse : `http://127.0.0.1:8000`
+
+---
+
+## 📋 Épics & User Stories
+
+### 🔹 Épic 1 : Gestion des Événements (Dashboard Admin - BDE)
+* **US 1.1 — Création d'un événement :** En tant qu'administrateur BDE, je peux créer un événement avec une jauge maximale supérieure à `0`. L'accès est strictly réservé au rôle `admin`.
+* **US 1.2 — Suivi des capacités :** Visualisation en temps réel des places restantes par événement sur le tableau de bord d'administration.
+
+### 🔹 Épic 2 : Réservation & Espace Étudiant
+* **US 2.1 — Inscription en un clic :** Inscription instantanée à un événement gratuit. Le système empêche les doubles inscriptions et bloque la réservation si la jauge maximale est atteinte.
+
+### 🔹 Épic 3 : Le Générateur de Tickets (Le Pass Étudiant)
+* **US 3.1 — Ticket & Pass Numérique :** Génération d'un pass unique (format `BDE-2026-XXXXX`) accessible dans la section *"Mes Billets"*, regroupant les détails de l'événement et les informations de l'étudiant.
+
+---
+
+## 👤 Auteur
+
+* **Créatrices/Créateurs du Projet :** Mahmoudi Abdellah
+* **Projet :** Billetterie du Campus ENAA
+* **Date de Création :** 14/07/2026
