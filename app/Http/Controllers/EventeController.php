@@ -35,7 +35,7 @@ class EventeController extends Controller
             'title' => 'required',
             'place' => 'required',
             'date' => 'required',
-            'heure' => 'required',
+            'houre' => 'required',
             'price' => 'required',
             'places_limite' => 'required',
             'description' => 'required',
@@ -47,7 +47,7 @@ class EventeController extends Controller
             'title' => $request->title,
             'place' => $request->place,
             'date' => $request->date,
-            'houre' => $request->heure,
+            'houre' => $request->houre,
             'price' => $request->price,
             'places_limite' => $request->places_limite,
             'description' => $request->description,
@@ -69,23 +69,21 @@ class EventeController extends Controller
             'title' => 'required',
             'place' => 'required',
             'date' => 'required',
-            'heure' => 'required',
+            'houre' => 'required',
             'price' => 'required',
             'places_limite' => 'required',
             'description' => 'required',
         ]);
 
         $event = Event::findOrFail($id);
-
-        Event::create([
+        $event->update([
             'title' => $request->title,
             'place' => $request->place,
             'date' => $request->date,
-            'houre' => $request->heure,
+            'houre' => $request->houre,
             'price' => $request->price,
             'places_limite' => $request->places_limite,
             'description' => $request->description,
-            'created_by' => Auth::id(),
         ]);
         return redirect()->route('adminDashboard');
     }

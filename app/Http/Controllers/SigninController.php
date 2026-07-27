@@ -12,6 +12,11 @@ class SigninController extends Controller
         return view('auth.signin');
     }
 
+    public function first()
+    {
+        return redirect()->route('login');
+    }
+
     public function signin(Request $request)
     {
         $request->validate([
@@ -62,6 +67,6 @@ class SigninController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('leaveApp');
+        return redirect()->route('login');
     }
 }

@@ -133,7 +133,7 @@
                                 <td class="px-6 py-4 font-bold text-stone-900">{{ $event->title }}</td>
                                 <td class="px-6 py-4 text-stone-600">{{ $event->place }}</td>
                                 <td class="px-6 py-4 text-stone-600 font-medium">
-                                    {{ $event->date }} <span class="text-stone-400 text-xs">à</span> {{ $event->heure }}
+                                    {{ \Carbon\Carbon::parse($event->date)->format('d M, Y') }} <span class="text-stone-400 text-xs">à</span> {{ $event->houre }}
                                 </td>
                                 <td class="px-6 py-4 font-extrabold text-emerald-800">
                                     {{ $event->price }} DH
@@ -182,5 +182,13 @@
         </div>
 
     </main>
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            // If page was loaded from back/forward cache, force reload
+            if (event.persisted || (performance && performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>

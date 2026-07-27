@@ -177,6 +177,13 @@
         </div>
 
     </main>
-
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            // If page was loaded from back/forward cache, force reload
+            if (event.persisted || (performance && performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>

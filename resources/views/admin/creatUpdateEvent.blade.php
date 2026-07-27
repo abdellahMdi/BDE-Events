@@ -59,7 +59,7 @@
         </div>
 
         <div class="bg-white rounded-3xl shadow-sm border border-stone-200 p-6 sm:p-8">
-            <form action="{{ isset($event) ? route('updateEvent', $event->id) : route('saveEvent') }}" method="POST" class="space-y-6">
+            <form action="{{isset($event) && $event->id ? route('updateEvent', $event->id) : route('saveEvent') }}" method="POST" class="space-y-6">
                 @csrf
                 @if(isset($event))
                     @method('PUT')
@@ -87,10 +87,10 @@
                         @error('date') <span class="text-xs text-rose-500 mt-1 block font-medium">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label for="heure" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">Heure</label>
-                        <input type="time" name="heure" id="heure" value="{{ old('heure', $event->heure ?? '') }}" required
+                        <label for="houre" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-2">Heure</label>
+                        <input type="time" name="houre" id="houre" value="{{ old('houre', $event->houre ?? '') }}" required
                             class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-sm transition-all outline-none bg-stone-50/30">
-                        @error('heure') <span class="text-xs text-rose-500 mt-1 block font-medium">{{ $message }}</span> @enderror
+                        @error('houre') <span class="text-xs text-rose-500 mt-1 block font-medium">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
@@ -128,6 +128,14 @@
         </div>
 
     </main>
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            // If page was loaded from back/forward cache, force reload
+            if (event.persisted || (performance && performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
 
 </body>
 </html>

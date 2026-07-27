@@ -38,7 +38,7 @@
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
         <div>
-            <a href="{{ route('myTickets', ['id' => auth()->id()]) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-stone-200 text-stone-700 text-xs font-bold hover:bg-stone-50 transition-all shadow-sm">
+            <a href="{{ route('dashboardStudent') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-stone-200 text-stone-700 text-xs font-bold hover:bg-stone-50 transition-all shadow-sm">
                 <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
@@ -175,6 +175,13 @@
         </div>
 
     </main>
-
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            // If page was loaded from back/forward cache, force reload
+            if (event.persisted || (performance && performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>

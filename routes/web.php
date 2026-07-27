@@ -7,8 +7,8 @@ use App\Http\Controllers\SigninController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(SigninController::class)->group(function () {
-    Route::get("/login", "showPage")->name("loginPage");
-    Route::post("/login", "signin")->name("loginLogic");
+    Route::get("/login", "showPage")->name("login");
+    Route::post("/login/user", "signin")->name("loginLogic");
     Route::post("/logout", "logout")->name("logout");
 });
 
@@ -22,7 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(ReservationController::class)->group(function () {
         Route::post("/reserve/{id}", "reservePlace")->name("reserveEvent");
-        Route::delete("/cancel/{id}", "reservePlace")->name("cancelReservation");
+        Route::delete("/cancel/{id}", "cancelReservation")->name("cancelReservation");
     });
 
     // ADMIN 
