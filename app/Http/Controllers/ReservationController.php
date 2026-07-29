@@ -15,11 +15,11 @@ class ReservationController extends Controller
         $existingReservation = Reservation::where("user_id", $userId)->where("event_id", $id)->exists();
 
         if ($existingReservation) {
-            return back()->with('error', 'Vous avez déjà réservé pour cet événement.');
+            return back();
         }
 
         if ($event->places_limite <= 0) {
-            return back()->with('error', 'Désolé, cet événement est complet.');
+            return back();
         }
 
         $reservation = Reservation::create([

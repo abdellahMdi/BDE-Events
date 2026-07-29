@@ -35,4 +35,16 @@ class Event extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function estComplet(): bool 
+    {
+        if ($this->has('places_limite') > 0)
+        {
+            return true ;
+        }
+        
+            return false;
+        
+
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\SigninController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(SigninController::class)->group(function () {
+    Route::get("/", "first");
     Route::get("/login", "showPage")->name("login");
     Route::post("/login/user", "signin")->name("loginLogic");
     Route::post("/logout", "logout")->name("logout");
@@ -28,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     // ADMIN 
     Route::middleware(['admin'])->group(function () {
         Route::controller(AdminController::class)->group(function () {
-            Route::get("/admin/dashboard", "index")->name("adminDashboard");
+            Route::get("/admin/dashboard", index"")->name("adminDashboard");
         });
 
         Route::controller(EventeController::class)->group(function () {
