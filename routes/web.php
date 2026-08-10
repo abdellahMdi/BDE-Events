@@ -26,10 +26,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete("/cancel/{id}", "cancelReservation")->name("cancelReservation");
     });
 
-    // ADMIN 
+    // ADMIN
     Route::middleware(['admin'])->group(function () {
         Route::controller(AdminController::class)->group(function () {
-            Route::get("/admin/dashboard", index"")->name("adminDashboard");
+            Route::get("/admin/dashboard", "index")->name("adminDashboard");
         });
 
         Route::controller(EventeController::class)->group(function () {
