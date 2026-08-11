@@ -33,14 +33,6 @@ class SigninController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
-            // dd([
-            //     'auth_status' => 'SUCCESS - User logged in!',
-            //     'user_id' => $user->id,
-            //     'role_id_in_db' => $user->role_id,
-            //     'has_role_relation' => !is_null($user->role),
-            //     'role_label' => $user->role ? $user->role->label,
-            // ]);
-
             if ($user->role) {
                 $role = strtolower($user->role->label);
 
@@ -53,7 +45,7 @@ class SigninController extends Controller
                 }
             }
 
-            return redirect()->intended('/dashboard'); 
+            return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
