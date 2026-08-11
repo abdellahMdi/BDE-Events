@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller; // Added missing base controller import
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Ticket;
 
 class EventController extends Controller
 {
-
     public function displayEvent()
     {
         // Fetch events eager-loading the creator relationship
@@ -65,5 +65,52 @@ class EventController extends Controller
             'message' => 'Event created successfully!',
             'event' => $event,
         ], 201);
+    }
+
+    public function showEvent($id)
+    {
+        // Find the event or return a 404 JSON response automatically
+        $event = Event::with('creator')->findOrFail($id);
+
+        return response()->json([
+            'event' => $event,
+        ], 200);
+    }
+
+    public function updateEvent(Request $request, $id)
+    {
+        // 1. Validate inputs with appropriate data types
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'place' => ['required', 'string', 'max:255'],
+            'date' => ['required', 'date'],
+            'houre' => ['required'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'places_limite' => ['required', 'integer', 'min:0'],
+            'description' => ['required', 'string'],
+        ]);
+
+        // 2. Find event or fail with 404 JSON
+        $event = Event::findOrFail($id);
+
+        // 3. Perform update using validated array
+        $event->update($validated);
+
+        // 4. Return updated model with 200 OK status
+        return response()->json([
+            'message' => 'Event updated successfully!',
+            'event' => $event->fresh(),
+        ], 200);
+    }
+
+    public function deleteEvent($id)
+    {
+        $event = Event::findOrFail($id);
+        $event->delete();
+
+        return response()->json([
+            'message' => 'Event deleted successfully!',
+            'id' => (int) $id,
+        ], 200);
     }
 }
