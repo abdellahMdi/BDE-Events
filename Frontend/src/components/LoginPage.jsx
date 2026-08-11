@@ -1,5 +1,5 @@
-import AuthSideBanner from '../components/AuthSideBanner';
-import LoginForm from '../components/LoginForm';
+import AuthSideBanner from './AuthSideBanner';
+import LoginForm from './LoginForm';
 
 export default function LoginPage() {
   return (

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import AdminNavbar from '../components/AdminNavbar';
-import AdminHeroBanner from '../components/AdminHeroBanner';
-import AdminStatsGrid from '../components/AdminStatsGrid';
-import AdminEventsTable from '../components/AdminEventsTable';
+import AdminNavbar from './AdminNavbar';
+import AdminHeroBanner from './AdminHeroBanner';
+import AdminStatsGrid from './AdminStatsGrid';
+import AdminEventsTable from './AdminEventsTable';
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();

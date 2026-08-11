@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import AdminHeader from '../components/AdminHeader';
-import PageBanner from '../components/PageBanner';
-import EventForm from '../components/EventForm';
+import AdminHeader from './AdminHeader';
+import PageBanner from './PageBanner';
+import EventForm from './EventForm';
 
 export default function CreateEditEventPage() {
   const { id } = useParams();
