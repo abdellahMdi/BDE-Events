@@ -15,30 +15,39 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            /** @var \App\Models\User $user */
-            $user = Auth::user();
-            $user->load('role'); // Eager-load role relationship
-
+        // 1. Return a 401 error if authentication fails
+        if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'Login successful.',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role ? strtolower($user->role->label) : 'user',
-                ],
-            ], 200);
+                'message' => 'The provided credentials do not match our records.'
+            ], 401);
         }
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // 2. Safely resolve role (whether 'role' is a relationship or a database string column)
+        $roleLabel = 'student';
+        if ($user->relationLoaded('role') || method_exists($user, 'role')) {
+            $user->load('role');
+            $roleLabel = $user->role ? strtolower($user->role->label ?? $user->role) : 'student';
+        } elseif (is_string($user->role)) {
+            $roleLabel = strtolower($user->role);
+        }
+
+        // 3. Generate Sanctum API token required by React
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // 4. Return token alongside user data
         return response()->json([
-            'message' => 'The email or password you entered is incorrect.',
-            'errors' => [
-                'email' => ['The email or password you entered is incorrect.'],
+            'message' => 'Login successful.',
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $roleLabel,
             ],
-        ], 422);
+        ], 200);
     }
 
     public function logout(Request $request)

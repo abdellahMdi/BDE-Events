@@ -43,6 +43,16 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'id' => 3,
+                'name' => 'Abdellah',
+                'lastName' => 'Mah',
+                'email' => 'abd@example.com',
+                'password' => Hash::make('qwerty123'),
+                'role_id' => 1, // Participant role
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
 
         // 3. Seed Events (created_by references users.id)
