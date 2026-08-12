@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../Context/AuthContext';
 
 export default function MyTicketsPage() {
   const [tickets, setTickets] = useState([]);
@@ -15,7 +15,7 @@ export default function MyTicketsPage() {
   const fetchTickets = async () => {
     try {
       const res = await api.get('/my-tickets');
-      setTickets(res.data.tickets || []);
+      setTickets(res.data.tickets || res.data || []);
     } catch (err) {
       console.error('Error fetching tickets:', err);
     } finally {
@@ -28,7 +28,7 @@ export default function MyTicketsPage() {
 
     try {
       await api.delete(`/cancel/${eventId}`);
-      setTickets((prev) => prev.filter((t) => t.reservation?.event_id !== eventId));
+      setTickets((prev) => prev.filter((t) => (t.reservation?.event_id || t.event_id) !== eventId));
     } catch (err) {
       alert(err.response?.data?.message || "Impossible d'annuler la réservation.");
     }
@@ -80,6 +80,7 @@ export default function MyTicketsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {tickets.map((ticket) => {
               const event = ticket.reservation?.event || ticket.event;
+              const eventId = event?.id || ticket.event_id;
               return (
                 <div key={ticket.id} className="bg-white rounded-3xl border border-stone-200 p-6 flex flex-col justify-between space-y-4 shadow-sm">
                   <div className="space-y-3">
@@ -104,7 +105,7 @@ export default function MyTicketsPage() {
                   </div>
 
                   <button
-                    onClick={() => handleCancelTicket(event?.id)}
+                    onClick={() => handleCancelTicket(eventId)}
                     className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold rounded-xl text-xs transition-all"
                   >
                     Annuler la Réservation
