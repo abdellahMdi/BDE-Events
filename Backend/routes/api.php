@@ -2,10 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EventeController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\SigninController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\ReservController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +13,11 @@ use App\Http\Controllers\SigninController;
 |--------------------------------------------------------------------------
 */
 // Authentication
-Route::post('/login', [SigninController::class, 'signin']);
+Route::post('/login', [AuthController::class, 'signin']);
 
-// Public Event Browsing (Optional: move inside auth if guests shouldn't see events)
-Route::get('/events', [EventeController::class, 'displayEvent']);
-Route::get('/events/{id}', [EventeController::class, 'showEvent']);
-
+// Public Event Browsing
+Route::get('/events', [EventController::class, 'displayEvent']);
+Route::get('/events/{id}', [EventController::class, 'showEvent']);
 
 /*
 |--------------------------------------------------------------------------
@@ -28,18 +27,20 @@ Route::get('/events/{id}', [EventeController::class, 'showEvent']);
 Route::middleware(['auth:sanctum'])->group(function () {
 
     // Auth Actions
-    Route::post('/logout', [SigninController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
-        return response()->json($request->user());
+        return response()->json([
+            'id' => $request->user()->id,
+            'name' => $request->user()->name,
+            'email' => $request->user()->email,
+            'role' => $request->user()->role ? strtolower($request->user()->role->label) : 'user',
+        ]);
     });
 
     // Tickets & User Reservations
-    // Note: It's safer to fetch tickets based on the authenticated token rather than passing {id} in the URL
-    Route::get('/my-tickets', [EventeController::class, 'displayTicketByUser']);
-
-    Route::post('/reserve/{id}', [ReservationController::class, 'reservePlace']);
-    Route::delete('/cancel/{id}', [ReservationController::class, 'cancelReservation']);
-
+    Route::get('/my-tickets', [EventController::class, 'displayTicketByUser']);
+    Route::post('/reserve/{id}', [ReservController::class, 'reservePlace']);
+    Route::delete('/cancel/{id}', [ReservController::class, 'cancelReservation']);
 
     /*
     |--------------------------------------------------------------------------
@@ -52,8 +53,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'index']);
 
         // Event Management CRUD
-        Route::post('/admin/events', [EventeController::class, 'createEvent']);
-        Route::put('/admin/events/{id}', [EventeController::class, 'updateEvent']);
-        Route::delete('/admin/events/{id}', [EventeController::class, 'deleteEvent']);
+        Route::post('/admin/events', [EventController::class, 'createEvent']);
+        Route::put('/admin/events/{id}', [EventController::class, 'updateEvent']);
+        Route::delete('/admin/events/{id}', [EventController::class, 'deleteEvent']);
     });
 });
