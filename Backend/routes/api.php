@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ReservController;
 */
 // Authentication
 Route::post('/login', [AuthController::class, 'signin']);
+Route::post('/signin', [AuthController::class, 'signin']);
 
 // Public Event Browsing
 Route::get('/events', [EventController::class, 'displayEvent']);

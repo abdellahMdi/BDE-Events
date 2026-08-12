@@ -1,13 +1,23 @@
-import AuthSideBanner from '../components/AuthSideBanner';
-import LoginForm from '../components/LoginForm';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-export default function LoginPage() {
-  return (
-    <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-5xl bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px]">
-        <AuthSideBanner />
-        <LoginForm />
-      </div>
-    </div>
-  );
-}
+// Inside your component:
+const navigate = useNavigate();
+const { login } = useAuth();
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const data = await login(email, password);
+
+    // Dynamic redirect based on user role returned from backend
+    const userRole = (data.user?.role || '').toLowerCase();
+    if (userRole === 'admin') {
+      navigate('/admin/dashboard', { replace: true });
+    } else {
+      navigate('/events', { replace: true });
+    }
+  } catch (err) {
+    console.error('Login failed:', err);
+  }
+};

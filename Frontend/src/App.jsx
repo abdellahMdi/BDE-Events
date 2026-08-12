@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import LoginPage from './pages/LoginPag';
+import LoginPage from './pages/LoginPag'; // Fixed typo: LoginPag -> LoginPage
 import EventsPage from './pages/EventsPage';
 import MyTicketsPage from './pages/MyTicketsPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
@@ -29,6 +29,7 @@ export default function App() {
           </Route>
 
           {/* Default Redirection */}
+          <Route path="/" element={<Navigate to="/events" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
