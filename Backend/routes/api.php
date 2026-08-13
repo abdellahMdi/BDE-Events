@@ -44,6 +44,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/reserve/{id}', [ReservController::class, 'reservePlace']);
     Route::delete('/cancel/{id}', [ReservController::class, 'cancelReservation']);
 
+    Route::post('/events/{id}/reserve', [ReservController::class, 'reservePlace']);
+    Route::delete('/events/{id}/cancel', [ReservController::class, 'cancelReservation']);
+
     /*
     |--------------------------------------------------------------------------
     | Protected Admin Routes

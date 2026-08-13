@@ -1,133 +1,197 @@
-# 🎟️ BDE-Events — La Billetterie du Campus ENAA
+# 🎟️ BDE-Events — Campus Event & Ticketing Platform
 
-**BDE-Events** est la plateforme centralisée de gestion d'événements et de billetterie du campus ENAA. Elle offre au Bureau des Étudiants (BDE) un outil d'administration complet pour publier et piloter les événements, tout en permettant aux étudiants de réserver leur place en un clic, de simuler un paiement sécurisé et d'obtenir un billet numérique unique (Pass) directement sur leur profil.
-
----
-
-## 🌟 Table des Matières
-- [Fonctionnalités Principales](#-fonctionnalités-principales)
-- [Technologies Utilisées](#-technologies-utilisées)
-- [Prérequis](#-prérequis)
-- [Installation & Configuration](#-installation--configuration)
-- [Base de Données & Seeding](#-base-de-données--seeding)
-- [Épics & User Stories](#-épics--user-stories)
-- [Auteur](#-auteur)
+> A full-stack, containerized web application designed for managing student campus events, ticket reservations, and user authentication. Built with a modern **Laravel 11+ API** backend and a **React + Vite** frontend, fully orchestrable via **Docker Compose**.
 
 ---
 
-## 🚀 Fonctionnalités Principales
+## 🛠️ Tech Stack
 
-### 👨‍💼 Espace BDE (Administration)
-* **Création & Gestion d'Événements :** Publication complète d'événements (Titre, Description, Lieu, Date, Heure, Prix, Jauge maximale).
-* **Mise à jour & Suppression :** Édition en temps réel des détails d'un événement via des routes sécurisées (`PUT`/`DELETE`).
-* **Suivi des Capacités :** Tableau de bord affichant le nombre de places restantes en temps réel pour adapter la logistique.
-* **Contrôle d'Accès Sécurisé :** Middleware d'administration filtrant strictement l'accès aux membres du BDE.
+### **Frontend**
+* **Framework:** React 18 / Vite
+* **Styling:** Tailwind CSS
+* **Build Tool:** Vite v8+
+* **Web Server (Production/Docker):** Nginx (Alpine)
 
-### 🎓 Espace Étudiant
-* **Consultation du Catalogue :** Découverte des événements disponibles sur le campus.
-* **Inscriptions en Un Clic :** Validation immédiate des réservations pour les événements gratuits sans passer par un tunnel de paiement.
-* **Pass Numérique / Billet Unique :** Génération automatique d'un ticket avec une référence unique (`BDE-2026-XXXXX`).
-* **Gestion des Réservations :** Espace *"Mes Billets"* permettant de consulter tous les billets actifs et leurs détails.
+### **Backend**
+* **Framework:** Laravel 11+ (PHP 8.4)
+* **Authentication:** Laravel Sanctum (Token-based API authentication)
+* **Database:** MySQL 8.0
+* **API Architecture:** RESTful JSON API
 
----
-
-## 🛠️ Technologies Utilisées
-
-* **Backend :** [Laravel 13](https://laravel.com/) (PHP 8.5)
-* **Frontend :** Blade Templates, Tailwind CSS
-* **Base de Données :** MySQL / MariaDB
-* **Authentification & Autorisation :** Middleware Laravel Custom (`AdminMiddleware`, `auth`)
-* **Gestion de Dates :** Carbon (Intégration Laravel)
+### **DevOps & Containerization**
+* **Orchestration:** Docker & Docker Compose
+* **Containers:** PHP-FPM 8.4, Nginx, MySQL 8.0
 
 ---
 
-## ⚙️ Prérequis
+## 📂 Project Structure
 
-Avant de commencer, assurez-vous de disposer des éléments suivants :
-* **PHP** `>= 8.2` (PHP 8.5 recommandé)
-* **Composer**
-* **MySQL** ou **MariaDB**
-* **Node.js & NPM** (pour le build des assets)
-
----
-
-## 📥 Installation & Configuration
-
-### 1. Cloner le projet
-```bash
-git clone https://github.com/votre-compte/bde-events.git
-cd bde-events
+```text
+BDE-Events/
+├── Backend/                 # Laravel 11 API project
+│   ├── app/                 # Controllers, Models, Middleware
+│   ├── config/              # Application configuration
+│   ├── database/            # Migrations, Factories, Seeders
+│   ├── routes/              # api.php, web.php
+│   ├── .dockerignore        # Docker build exclusion rules
+│   └── Dockerfile           # PHP 8.4 FPM container config
+│
+├── Frontend/                # React + Vite application
+│   ├── public/              # Static assets
+│   ├── src/                 # React components, pages, hooks, styling
+│   ├── dist/                # Pre-built static output (for production Docker)
+│   ├── nginx.conf           # Nginx SPA router configuration
+│   ├── .dockerignore        # Docker build exclusion rules
+│   └── Dockerfile           # Production Nginx container config
+│
+├── docker-compose.yml       # Root orchestrator for Backend, Frontend, and MySQL
+└── README.md                # Project documentation
 ```
 
-### 2. Installer les dépendances PHP
+---
+
+## 🚀 Quick Start (Using Docker Compose)
+
+### **Prerequisites**
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running on your host machine.
+* Git installed.
+
+---
+
+### **1. Clone the Repository**
 ```bash
-composer install
+git clone https://github.com/YOUR_USERNAME/BDE-Events.git
+cd BDE-Events
 ```
 
-### 3. Configurer l'environnement
-Copiez le fichier `.env.example` pour créer votre fichier `.env` :
+---
+
+### **2. Configure Environment Variables**
+
+Create the backend `.env` file by copying the example template:
+
 ```bash
-cp .env.example .env
+cp Backend/.env.example Backend/.env
 ```
 
-Ouvrez `.env` et configurez votre base de données :
+Ensure the database settings in `Backend/.env` match your `docker-compose.yml`:
+
 ```env
+APP_NAME="BDE Events"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
 DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
+DB_HOST=db
 DB_PORT=3306
 DB_DATABASE=bde_events
-DB_USERNAME=root
-DB_PASSWORD=
+DB_USERNAME=bde_user
+DB_PASSWORD=bde_password
 ```
 
-### 4. Générer la clé d'application
+---
+
+### **3. Build Frontend Dist Folder**
+
+To ensure maximum performance and minimal container memory usage, build the static frontend bundle on your host machine prior to launching Docker:
+
 ```bash
+cd Frontend
+npm install
+npm run build
+cd ..
+```
+
+---
+
+### **4. Launch Containers**
+
+From the project root directory, run:
+
+```bash
+docker-compose up -d --build
+```
+
+This starts 4 containers:
+* **`bde_frontend`**: Nginx serving the React static build (`http://localhost:5173`).
+* **`bde_backend`**: PHP 8.4 FPM service processing API requests.
+* **`bde_backend_web`**: Nginx web server handling HTTP requests for Laravel (`http://localhost:8000`).
+* **`bde_db`**: MySQL 8.0 database container.
+
+---
+
+### **5. Initialize Laravel Application**
+
+Run the required Artisan setup commands inside the running backend container:
+
+```bash
+# 1. Generate Application Encryption Key
+docker-compose exec backend php artisan key:generate
+
+# 2. Run Database Migrations (and Seeders)
+docker-compose exec backend php artisan migrate --seed
+
+# 3. Create Storage Link for Media Uploads
+docker-compose exec backend php artisan storage:link
+```
+
+---
+
+## 🌐 Application URLs
+
+| Service | Protocol | Local URL | Description |
+| :--- | :--- | :--- | :--- |
+| **Frontend** | HTTP | `http://localhost:5173` | React User Interface |
+| **Backend API** | HTTP | `http://localhost:8000/api` | Laravel REST API Endpoints |
+| **Database** | MySQL | `localhost:3306` (or `3307`) | MySQL Database Access |
+
+---
+
+## 💻 Local Development (Without Docker)
+
+If you prefer running the stack natively on your host machine:
+
+### **Backend Setup**
+```bash
+cd Backend
+composer install
+cp .env.example .env
 php artisan key:generate
+php artisan migrate --seed
+php artisan serve --port=8000
+```
+
+### **Frontend Setup**
+```bash
+cd Frontend
+npm install
+npm run dev
 ```
 
 ---
 
-## 🗄️ Base de Données & Seeding
-
-Exécutez les migrations pour créer la structure de la base de données, accompagnées des seeders pour générer les rôles et administrateurs par défaut :
+## 🛢️ Useful Docker Commands
 
 ```bash
-php artisan migrate:fresh --seed
-```
+# View container status
+docker-compose ps
 
-> **Note :** Le seeder initialise par défaut un compte Administrateur (BDE) et un compte Étudiant pour vos tests.
+# View real-time logs for all services
+docker-compose logs -f
 
-### Réinitialiser le Cache des Routes & Configuration
-```bash
-php artisan route:clear
-php artisan config:clear
-php artisan view:clear
-```
+# View logs for backend only
+docker-compose logs -f backend
 
-### 5. Lancer le serveur local
-```bash
-php artisan serve
+# Stop all running containers
+docker-compose down
+
+# Stop and wipe database volumes (Clean Reset)
+docker-compose down -v
 ```
-La plateforme est accessible à l'adresse : `http://127.0.0.1:8000`
 
 ---
 
-## 📋 Épics & User Stories
+## 📄 License
 
-### 🔹 Épic 1 : Gestion des Événements (Dashboard Admin - BDE)
-* **US 1.1 — Création d'un événement :** En tant qu'administrateur BDE, je peux créer un événement avec une jauge maximale supérieure à `0`. L'accès est strictly réservé au rôle `admin`.
-* **US 1.2 — Suivi des capacités :** Visualisation en temps réel des places restantes par événement sur le tableau de bord d'administration.
-
-### 🔹 Épic 2 : Réservation & Espace Étudiant
-* **US 2.1 — Inscription en un clic :** Inscription instantanée à un événement gratuit. Le système empêche les doubles inscriptions et bloque la réservation si la jauge maximale est atteinte.
-
-### 🔹 Épic 3 : Le Générateur de Tickets (Le Pass Étudiant)
-* **US 3.1 — Ticket & Pass Numérique :** Génération d'un pass unique (format `BDE-2026-XXXXX`) accessible dans la section *"Mes Billets"*, regroupant les détails de l'événement et les informations de l'étudiant.
-
----
-
-## 👤 Auteur
-
-* **Créatrices/Créateurs du Projet :** Mahmoudi Abdellah
-* **Projet :** Billetterie du Campus ENAA
-* **Date de Création :** 14/07/2026
+This project is open-source software licensed under the [MIT License](https://opensource.org/licenses/MIT).

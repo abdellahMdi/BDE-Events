@@ -1,16 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function StudentHeroBanner({ eventCount = 0 }) {
+export default function StudentHeroBanner({ eventsCount = 0 }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/login');
     } catch (err) {
-      console.error('Logout error:', err);
+      console.error('Logout failed:', err);
+    } finally {
+      navigate('/login', { replace: true });
     }
   };
 
@@ -35,7 +36,7 @@ export default function StudentHeroBanner({ eventCount = 0 }) {
         <div className="bg-emerald-800/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-emerald-700 flex items-center gap-2.5">
           <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></div>
           <span className="text-xs font-medium text-emerald-100">
-            <strong className="text-amber-300 text-sm font-bold">{eventCount}</strong> Événements
+            <strong className="text-amber-300 text-sm font-bold">{eventsCount}</strong> Événements
           </span>
         </div>
 

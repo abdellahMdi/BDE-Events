@@ -60,6 +60,39 @@ class ReservController extends Controller
         ], 201);
     }
 
+    public function store(Request $request, $eventId)
+    {
+        $user = $request->user();
+
+        // Check if event exists
+        $event = Event::findOrFail($eventId);
+
+        // Check existing reservation
+        $alreadyReserved = Reservation::where('user_id', $user->id)
+            ->where('event_id', $eventId)
+            ->exists();
+
+        if ($alreadyReserved) {
+            return response()->json(['message' => 'Vous avez déjà réservé cet événement.'], 400);
+        }
+
+        // Check place limits
+        if ($event->places_limite <= 0) {
+            return response()->json(['message' => 'Aucune place disponible.'], 400);
+        }
+
+        // Create reservation
+        Reservation::create([
+            'user_id' => $user->id,
+            'event_id' => $eventId,
+        ]);
+
+        // Decrement available places
+        $event->decrement('places_limite');
+
+        return response()->json(['message' => 'Réservation réussie!'], 201);
+    }
+
     public function cancelReservation(Request $request, $id)
     {
         $userId = $request->user()->id;
