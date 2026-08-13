@@ -16,7 +16,7 @@ use App\Http\Controllers\Api\ReservController;
 Route::post('/login', [AuthController::class, 'signin']);
 Route::post('/signin', [AuthController::class, 'signin']);
 
-// Public Event Browsing
+
 Route::get('/events', [EventController::class, 'displayEvent']);
 Route::get('/events/{id}', [EventController::class, 'showEvent']);
 
@@ -37,6 +37,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             'role' => $request->user()->role ? strtolower($request->user()->role->label) : 'user',
         ]);
     });
+
 
     // Tickets & User Reservations
     Route::get('/my-tickets', [EventController::class, 'displayTicketByUser']);

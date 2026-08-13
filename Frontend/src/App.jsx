@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import LoginPage from './pages/LoginPag'; // Fixed typo: LoginPag -> LoginPage
+import LoginPage from './pages/LoginPage';
 import EventsPage from './pages/EventsPage';
 import MyTicketsPage from './pages/MyTicketsPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
@@ -9,10 +9,10 @@ import CreateEditEventPage from './pages/CreateEditEventPage';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
-          {/* Auth Route */}
+          {/* Public Auth Route */}
           <Route path="/login" element={<LoginPage />} />
 
           {/* Student Routes */}
@@ -28,11 +28,11 @@ export default function App() {
             <Route path="/admin/events/edit/:id" element={<CreateEditEventPage />} />
           </Route>
 
-          {/* Default Redirection */}
-          <Route path="/" element={<Navigate to="/events" replace />} />
+          {/* Default Redirect */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

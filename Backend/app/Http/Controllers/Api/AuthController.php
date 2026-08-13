@@ -55,12 +55,23 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        try {
+            $user = $request->user();
 
-        return response()->json([
-            'message' => 'Logged out successfully.',
-        ], 200);
+            if ($user && $user->currentAccessToken()) {
+                // Delete current token
+                $user->currentAccessToken()->delete();
+            }
+
+            return response()->json([
+                'message' => 'Déconnexion réussie.'
+            ], 200);
+
+        } catch (\Throwable $e) {
+            // Return 200 even on edge cases so client state can clear
+            return response()->json([
+                'message' => 'Déconnecté localement.'
+            ], 200);
+        }
     }
 }

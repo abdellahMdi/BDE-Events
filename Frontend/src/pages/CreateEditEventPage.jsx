@@ -23,6 +23,12 @@ export default function CreateEditEventPage() {
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(isEditing);
 
+  // Helper to ensure dates strictly match YYYY-MM-DD format for <input type="date">
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return '';
+    return dateStr.split('T')[0].split(' ')[0];
+  };
+
   useEffect(() => {
     if (isEditing) {
       fetchEvent();
@@ -33,14 +39,15 @@ export default function CreateEditEventPage() {
     try {
       const res = await api.get(`/events/${id}`);
       const event = res.data.event || res.data;
+
       setFormData({
         title: event.title || '',
         description: event.description || '',
-        date: event.date || '',
+        date: formatDateForInput(event.date), // Cleans 2026-08-30T00:00:00.000000Z -> 2026-08-30
         houre: event.houre || '',
         place: event.place || '',
-        price: event.price || '',
-        places_limite: event.places_limite || '',
+        price: event.price ?? '',
+        places_limite: event.places_limite ?? '',
       });
     } catch (err) {
       console.error('Error fetching event details:', err);
@@ -59,15 +66,22 @@ export default function CreateEditEventPage() {
     setSubmitting(true);
     setErrors({});
 
+    // Clean payload before submitting to backend
+    const payload = {
+      ...formData,
+      date: formatDateForInput(formData.date),
+    };
+
     try {
       if (isEditing) {
-        await api.put(`/admin/events/${id}`, formData);
+        await api.put(`/admin/events/${id}`, payload);
       } else {
-        await api.post('/admin/events', formData);
+        await api.post('/admin/events', payload);
       }
       navigate('/admin/dashboard');
     } catch (err) {
       if (err.response && err.response.data.errors) {
+        console.log('Laravel Validation Errors:', err.response.data.errors);
         setErrors(err.response.data.errors);
       } else {
         alert(err.response?.data?.message || 'Erreur lors de la sauvegarde.');
